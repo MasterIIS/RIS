@@ -21,6 +21,10 @@ public class Point extends Shape{
 		this(x, y);
 		this.color = color;
 	}
+	
+	public String toString() {
+		return "("+x+","+y+")";
+	}
 
 	@Override
 	public void draw(Graphics g) {
