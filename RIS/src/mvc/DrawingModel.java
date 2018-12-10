@@ -1,10 +1,11 @@
 package mvc;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import introduction.Point;
 
-public class DrawingModel {
+public class DrawingModel implements Serializable{
 	private ArrayList<Point> points = new ArrayList<Point>();
 	
 	public ArrayList<Point> getAll(){

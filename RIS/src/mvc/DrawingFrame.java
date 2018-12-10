@@ -12,6 +12,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.ListSelectionModel;
 
 public class DrawingFrame extends JFrame{
 	
@@ -39,6 +40,7 @@ public class DrawingFrame extends JFrame{
 		pnlLog.add(scrollPane);
 		
 		lstLog = new JList();
+		lstLog.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrollPane.setViewportView(lstLog);
 		
 		JPanel pnlToolbar = new JPanel();
@@ -51,6 +53,30 @@ public class DrawingFrame extends JFrame{
 			}
 		});
 		pnlToolbar.add(btnOpen);
+		
+		JButton btnRemove = new JButton("Remove");
+		btnRemove.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				controller.remove(lstLog.getSelectedIndex());
+			}
+		});
+		pnlToolbar.add(btnRemove);
+		
+		JButton btnOpenModel = new JButton("Open model");
+		btnOpenModel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				controller.openModel();
+			}
+		});
+		pnlToolbar.add(btnOpenModel);
+		
+		JButton btnSaveModel = new JButton("Save model");
+		btnSaveModel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				controller.saveModel();
+			}
+		});
+		pnlToolbar.add(btnSaveModel);
 		
 		view.addMouseListener(new MouseAdapter() {
 			@Override

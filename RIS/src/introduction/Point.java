@@ -2,8 +2,9 @@ package introduction;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.io.Serializable;
 
-public class Point extends Shape{
+public class Point extends Shape implements Serializable{
 	private int x;
 	private int y;
 

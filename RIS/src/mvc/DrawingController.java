@@ -4,8 +4,13 @@ import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,6 +19,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 
 import command.CmdAddPoint;
+import command.Command;
 import introduction.Point;
 
 public class DrawingController {
@@ -21,7 +27,7 @@ public class DrawingController {
 	private DrawingFrame frame;
 	public final static Logger LOGGER = Logger.getLogger("logger");
 	private FileHandler fileHandler;
-	private DefaultListModel<String> dlm = new DefaultListModel<String>();
+	private DefaultListModel<Command> dlm = new DefaultListModel<Command>();
 
 	public DrawingController(DrawingModel model, DrawingFrame frame) {
 		this.model = model;
@@ -50,7 +56,7 @@ public class DrawingController {
 		CmdAddPoint cmdAddPoint = new CmdAddPoint(p, model);
 		cmdAddPoint.execute();
 		LOGGER.log(Level.INFO, cmdAddPoint.toString());
-		dlm.add(0, cmdAddPoint.toString());
+		dlm.add(0, cmdAddPoint);
 		frame.getView().repaint();
 
 	}
@@ -65,8 +71,8 @@ public class DrawingController {
 			File selectedFile = jfc.getSelectedFile();
 			// This will reference one line at a time
 			String line = null;
-			model.getAll().clear();
-			dlm.clear();
+			//model.getAll().clear();
+			//dlm.clear();
 			try {
 				// FileReader reads text files in the default encoding.
 				FileReader fileReader = new FileReader(selectedFile.getAbsolutePath());
@@ -78,7 +84,8 @@ public class DrawingController {
 						int y = Integer.parseInt(line.substring(line.indexOf(",")+1,line.indexOf(")")));
 						CmdAddPoint cmd = new CmdAddPoint(new Point(x, y, Color.BLUE), model);
 						cmd.execute();
-						dlm.add(0,cmd.toString());
+						LOGGER.log(Level.INFO, cmd.toString());
+						dlm.add(0,cmd);
 					}
 					frame.getView().repaint();	
 				}   
@@ -89,5 +96,63 @@ public class DrawingController {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public void remove(int selectedIndex) {
+		// TODO Auto-generated method stub
+		dlm.getElementAt(selectedIndex).unexecute();
+		dlm.remove(selectedIndex);
+		frame.getView().repaint();
+	}
+
+	public void saveModel() {
+		// TODO Auto-generated method stub
+		String path = "D:\\Asistenti\\Vukmanovic\\RIS\\";
+		String fileName = "model.ser";
+		File dir = new File(path);
+		dir.mkdirs();
+		File file = new File(path+fileName);
+		FileOutputStream fileOut;
+		try {
+			fileOut = new FileOutputStream(file);
+			ObjectOutputStream outObject = new ObjectOutputStream(fileOut);
+			outObject.writeObject(model);
+			outObject.close();
+			fileOut.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+
+	public void openModel() {
+		// TODO Auto-generated method stub
+		String path = "D:\\Asistenti\\Vukmanovic\\RIS\\";
+		String fileName = "model.ser";
+		FileInputStream fileIn;
+		try {
+			fileIn = new FileInputStream(path+fileName);
+			ObjectInputStream inObject = new ObjectInputStream(fileIn);
+			DrawingModel model = (DrawingModel) inObject.readObject();
+			this.model = model;
+			frame.getView().setModel(model);
+			frame.getView().repaint();
+			inObject.close();
+			fileIn.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 }
