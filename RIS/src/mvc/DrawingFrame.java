@@ -78,6 +78,22 @@ public class DrawingFrame extends JFrame{
 		});
 		pnlToolbar.add(btnSaveModel);
 		
+		JButton btnUndo = new JButton("Undo");
+		btnUndo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				controller.undo();
+			}
+		});
+		pnlToolbar.add(btnUndo);
+		
+		JButton btnRedo = new JButton("Redo");
+		btnRedo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				controller.redo();
+			}
+		});
+		pnlToolbar.add(btnRedo);
+		
 		view.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
